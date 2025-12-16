@@ -43,10 +43,7 @@ export class WebhooksService {
     return this.prisma.webhookEvent.findMany({
       where: {
         status: 'pending',
-        OR: [
-          { nextRetryAt: null },
-          { nextRetryAt: { lte: new Date() } },
-        ],
+        OR: [{ nextRetryAt: null }, { nextRetryAt: { lte: new Date() } }],
       },
       orderBy: { createdAt: 'asc' },
     });
@@ -74,9 +71,10 @@ export class WebhooksService {
 
     // Exponential backoff: 1min, 5min, 15min, 30min, 1hr
     const retryDelays = [1, 5, 15, 30, 60];
-    const nextRetryAt = scheduleRetry && newAttempts < maxAttempts
-      ? new Date(Date.now() + retryDelays[newAttempts - 1] * 60 * 1000)
-      : null;
+    const nextRetryAt =
+      scheduleRetry && newAttempts < maxAttempts
+        ? new Date(Date.now() + retryDelays[newAttempts - 1] * 60 * 1000)
+        : null;
 
     return this.prisma.webhookEvent.update({
       where: { id },
@@ -89,7 +87,11 @@ export class WebhooksService {
   }
 
   // Simulated webhook receiver - processes incoming webhooks
-  async processIncomingWebhook(eventId: string, type: string, data: Record<string, any>) {
+  async processIncomingWebhook(
+    eventId: string,
+    type: string,
+    data: Record<string, any>,
+  ) {
     // Idempotency check
     if (this.processedEvents.has(eventId)) {
       this.logger.warn(`Event ${eventId} already processed (idempotency)`);
@@ -97,7 +99,9 @@ export class WebhooksService {
     }
 
     // Simulate processing (could fail randomly for testing)
-    this.logger.log(`Processing webhook: ${eventId} (${type})`);
+    this.logger.log(
+      `Processing webhook: ${eventId} (${type}) with ${Object.keys(data).length} data fields`,
+    );
 
     // Mark as processed
     this.processedEvents.add(eventId);
@@ -115,21 +119,30 @@ export class WebhooksService {
   }
 
   // Helper to emit events for various actions
-  async emitSubscriptionCreated(subscriptionId: string, data: Record<string, any>) {
+  async emitSubscriptionCreated(
+    subscriptionId: string,
+    data: Record<string, any>,
+  ) {
     return this.createEvent(WebhookEventType.SUBSCRIPTION_CREATED, {
       subscriptionId,
       ...data,
     });
   }
 
-  async emitSubscriptionActivated(subscriptionId: string, data: Record<string, any>) {
+  async emitSubscriptionActivated(
+    subscriptionId: string,
+    data: Record<string, any>,
+  ) {
     return this.createEvent(WebhookEventType.SUBSCRIPTION_ACTIVATED, {
       subscriptionId,
       ...data,
     });
   }
 
-  async emitSubscriptionCanceled(subscriptionId: string, data: Record<string, any>) {
+  async emitSubscriptionCanceled(
+    subscriptionId: string,
+    data: Record<string, any>,
+  ) {
     return this.createEvent(WebhookEventType.SUBSCRIPTION_CANCELED, {
       subscriptionId,
       ...data,

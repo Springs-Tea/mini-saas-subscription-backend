@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { SubscriptionsService } from '../subscriptions/subscriptions.service';
 import { CheckoutDto } from './dto/payment.dto';
@@ -12,7 +16,9 @@ export class PaymentsService {
 
   async checkout(dto: CheckoutDto) {
     // Get subscription
-    const subscription = await this.subscriptionsService.findById(dto.subscriptionId);
+    const subscription = await this.subscriptionsService.findById(
+      dto.subscriptionId,
+    );
     if (!subscription) {
       throw new NotFoundException('Subscription not found');
     }

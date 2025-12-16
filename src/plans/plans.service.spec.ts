@@ -72,7 +72,7 @@ describe('PlansService', () => {
 
   describe('findByName', () => {
     it('should return a plan by name', async () => {
-      const result = await service.findByName('Free');
+      await service.findByName('Free');
       expect(prisma.plan.findUnique).toHaveBeenCalledWith({
         where: { name: 'Free' },
       });

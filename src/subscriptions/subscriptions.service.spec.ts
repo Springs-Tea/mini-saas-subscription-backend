@@ -7,7 +7,6 @@ import { PlansService } from '../plans/plans.service';
 
 describe('SubscriptionsService', () => {
   let service: SubscriptionsService;
-  let prisma: PrismaService;
 
   const mockPlan = {
     id: 'plan-1',
@@ -46,7 +45,9 @@ describe('SubscriptionsService', () => {
       create: jest.fn().mockResolvedValue(mockSubscription),
       findFirst: jest.fn().mockResolvedValue(null),
       findUnique: jest.fn().mockResolvedValue(mockSubscription),
-      update: jest.fn().mockResolvedValue({ ...mockSubscription, status: 'canceled' }),
+      update: jest
+        .fn()
+        .mockResolvedValue({ ...mockSubscription, status: 'canceled' }),
     },
   };
 
@@ -70,7 +71,6 @@ describe('SubscriptionsService', () => {
     }).compile();
 
     service = module.get<SubscriptionsService>(SubscriptionsService);
-    prisma = module.get<PrismaService>(PrismaService);
 
     jest.clearAllMocks();
   });
@@ -86,34 +86,42 @@ describe('SubscriptionsService', () => {
 
       expect(result).toBeDefined();
       expect(mockPlansService.findOne).toHaveBeenCalledWith('plan-1');
-      expect(mockCustomersService.findOrCreate).toHaveBeenCalledWith({ userId: 'user-123' });
+      expect(mockCustomersService.findOrCreate).toHaveBeenCalledWith({
+        userId: 'user-123',
+      });
     });
 
     it('should throw NotFoundException if plan not found', async () => {
       mockPlansService.findOne.mockResolvedValueOnce(null);
 
-      await expect(service.create({ userId: 'user-123', planId: 'invalid' }))
-        .rejects.toThrow(NotFoundException);
+      await expect(
+        service.create({ userId: 'user-123', planId: 'invalid' }),
+      ).rejects.toThrow(NotFoundException);
     });
 
     it('should throw BadRequestException if customer has active subscription', async () => {
-      mockPrismaService.subscription.findFirst.mockResolvedValueOnce(mockSubscription);
+      mockPrismaService.subscription.findFirst.mockResolvedValueOnce(
+        mockSubscription,
+      );
 
-      await expect(service.create({ userId: 'user-123', planId: 'plan-1' }))
-        .rejects.toThrow(BadRequestException);
+      await expect(
+        service.create({ userId: 'user-123', planId: 'plan-1' }),
+      ).rejects.toThrow(BadRequestException);
     });
   });
 
   describe('cancel', () => {
     it('should cancel a subscription', async () => {
-      const result = await service.cancel('sub-1');
+      await service.cancel('sub-1');
       expect(mockPrismaService.subscription.update).toHaveBeenCalled();
     });
 
     it('should throw NotFoundException if subscription not found', async () => {
       mockPrismaService.subscription.findUnique.mockResolvedValueOnce(null);
 
-      await expect(service.cancel('invalid')).rejects.toThrow(NotFoundException);
+      await expect(service.cancel('invalid')).rejects.toThrow(
+        NotFoundException,
+      );
     });
 
     it('should throw BadRequestException if already canceled', async () => {
@@ -122,7 +130,9 @@ describe('SubscriptionsService', () => {
         status: 'canceled',
       });
 
-      await expect(service.cancel('sub-1')).rejects.toThrow(BadRequestException);
+      await expect(service.cancel('sub-1')).rejects.toThrow(
+        BadRequestException,
+      );
     });
   });
 });

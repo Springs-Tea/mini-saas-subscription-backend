@@ -41,7 +41,9 @@ describe('PaymentsService', () => {
 
   const mockSubscriptionsService = {
     findById: jest.fn().mockResolvedValue(mockSubscription),
-    activate: jest.fn().mockResolvedValue({ ...mockSubscription, status: 'active' }),
+    activate: jest
+      .fn()
+      .mockResolvedValue({ ...mockSubscription, status: 'active' }),
   };
 
   beforeEach(async () => {
@@ -85,8 +87,9 @@ describe('PaymentsService', () => {
     it('should throw NotFoundException if subscription not found', async () => {
       mockSubscriptionsService.findById.mockResolvedValueOnce(null);
 
-      await expect(service.checkout({ subscriptionId: 'invalid' }))
-        .rejects.toThrow(NotFoundException);
+      await expect(
+        service.checkout({ subscriptionId: 'invalid' }),
+      ).rejects.toThrow(NotFoundException);
     });
 
     it('should throw BadRequestException if subscription not pending', async () => {
@@ -95,8 +98,9 @@ describe('PaymentsService', () => {
         status: 'active',
       });
 
-      await expect(service.checkout({ subscriptionId: 'sub-1' }))
-        .rejects.toThrow(BadRequestException);
+      await expect(
+        service.checkout({ subscriptionId: 'sub-1' }),
+      ).rejects.toThrow(BadRequestException);
     });
   });
 

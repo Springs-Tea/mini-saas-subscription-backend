@@ -1,7 +1,11 @@
 import { Controller, Get, Post, Body, Logger } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { WebhooksService } from './webhooks.service';
-import { WebhookEventDto, WebhookPayloadDto, WebhookResponseDto } from './dto/webhook.dto';
+import {
+  WebhookEventDto,
+  WebhookPayloadDto,
+  WebhookResponseDto,
+} from './dto/webhook.dto';
 
 @ApiTags('Webhooks')
 @Controller('api/v1/webhooks')
@@ -17,7 +21,9 @@ export class WebhooksController {
     description: 'Webhook received',
     type: WebhookResponseDto,
   })
-  async receiveWebhook(@Body() payload: WebhookPayloadDto): Promise<WebhookResponseDto> {
+  async receiveWebhook(
+    @Body() payload: WebhookPayloadDto,
+  ): Promise<WebhookResponseDto> {
     this.logger.log(`Received webhook: ${payload.eventId} (${payload.type})`);
     return this.webhooksService.processIncomingWebhook(
       payload.eventId,

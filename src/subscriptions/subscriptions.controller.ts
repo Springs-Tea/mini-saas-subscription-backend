@@ -7,12 +7,7 @@ import {
   Headers,
   NotFoundException,
 } from '@nestjs/common';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiResponse,
-  ApiHeader,
-} from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiHeader } from '@nestjs/swagger';
 import { SubscriptionsService } from './subscriptions.service';
 import {
   CreateSubscriptionDto,

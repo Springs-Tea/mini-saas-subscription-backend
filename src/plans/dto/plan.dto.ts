@@ -13,6 +13,9 @@ export class PlanDto {
   @ApiProperty({ description: 'Billing interval', example: 'monthly' })
   interval: string;
 
-  @ApiProperty({ description: 'Plan features', example: ['Feature 1', 'Feature 2'] })
+  @ApiProperty({
+    description: 'Plan features',
+    example: ['Feature 1', 'Feature 2'],
+  })
   features: string[];
 }

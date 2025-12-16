@@ -33,7 +33,9 @@ export class WebhookProcessor extends WorkerHost {
       return;
     }
 
-    const webhookUrl = this.configService.get<string>('WEBHOOK_ENDPOINT_URL') || 'http://localhost:3000/api/v1/webhooks/provider';
+    const webhookUrl =
+      this.configService.get<string>('WEBHOOK_ENDPOINT_URL') ||
+      'http://localhost:3000/api/v1/webhooks/provider';
 
     try {
       // Simulate webhook delivery
@@ -71,9 +73,10 @@ export class WebhookProcessor extends WorkerHost {
 
       // Exponential backoff
       const retryDelays = [1, 5, 15, 30, 60];
-      const nextRetryAt = newAttempts < maxAttempts
-        ? new Date(Date.now() + retryDelays[newAttempts - 1] * 60 * 1000)
-        : null;
+      const nextRetryAt =
+        newAttempts < maxAttempts
+          ? new Date(Date.now() + retryDelays[newAttempts - 1] * 60 * 1000)
+          : null;
 
       await this.prisma.webhookEvent.update({
         where: { id: eventId },

@@ -44,20 +44,3 @@ Milestones
 	3.	Webhook events + retry/idempotency
 	4.	Docs + tests + CI
 
-Çalıştırma Deneyimi
-Altta sıraladıklarım proje içerisinde kullanılması gerekiyor ise kullanman gereken özellikleri yazıyor. Mesela mail gönderilmeyecek bir uygulamada mail ile ilgili olanı kullanmana gerek yok gibi.
-	•	docker compose up --build ile ayağa kalkacak.
-	•	compose.yml içinde tipik servisler:
-	•	api (backend)
-	•	web (Next.js varsa)
-	•	db (postgres)
-	•	opsiyonel: redis, worker, minio, mailhog, flower
-	•	.env.example → tek kopyalama ile çalışır.
-
-Kalite & Ürün Hissi
-	•	OpenAPI/Swagger (backend API’lerde)
-	•	Test: unit + integration (auth/permission kritik)
-	•	CI (GitHub Actions):
-	•	lint + test
-	•	docker build
-	•	Kaliteli profesyonel duran bir Readme.md dosyası yazılması.

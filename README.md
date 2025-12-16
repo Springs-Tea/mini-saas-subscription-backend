@@ -1,5 +1,16 @@
 # SaaS Subscription Management API
 
+![NestJS](https://img.shields.io/badge/NestJS-10.x-red)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue)
+![Prisma](https://img.shields.io/badge/Prisma-5.x-2D3748)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791)
+![Redis](https://img.shields.io/badge/Redis-7.x-DC382D)
+![BullMQ](https://img.shields.io/badge/BullMQ-5.x-yellow)
+![Swagger](https://img.shields.io/badge/Swagger-OpenAPI-green)
+![Jest](https://img.shields.io/badge/Jest-Testing-C21325)
+![Docker](https://img.shields.io/badge/Docker-Compose-2496ED)
+![License](https://img.shields.io/badge/License-MIT-yellow)
+
 A proof-of-concept (PoC) backend API for managing SaaS subscription lifecycle, including plans management, customer subscriptions, simulated payments, and webhook event handling with retry logic.
 
 ## Features
