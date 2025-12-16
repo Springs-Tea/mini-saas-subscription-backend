@@ -1,0 +1,83 @@
+// Prisma schema for SaaS Subscription Management
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Plan model - subscription plans (Free/Pro/Enterprise)
+model Plan {
+  id            String         @id @default(uuid())
+  name          String         @unique
+  price         Decimal        @db.Decimal(10, 2)
+  interval      String         @default("monthly") // monthly, yearly
+  features      Json           @default("[]")
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  subscriptions Subscription[]
+}
+
+// Customer model - users who can subscribe
+model Customer {
+  id            String         @id @default(uuid())
+  userId        String         @unique @map("user_id")
+  email         String?
+  name          String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  subscriptions Subscription[]
+
+  @@map("customers")
+}
+
+// Subscription model - links customers to plans
+model Subscription {
+  id               String    @id @default(uuid())
+  customerId       String    @map("customer_id")
+  planId           String    @map("plan_id")
+  status           String    @default("pending") // pending, active, canceled, expired
+  currentPeriodEnd DateTime  @map("current_period_end")
+  canceledAt       DateTime? @map("canceled_at")
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  customer Customer  @relation(fields: [customerId], references: [id])
+  plan     Plan      @relation(fields: [planId], references: [id])
+  invoices Invoice[]
+
+  @@map("subscriptions")
+}
+
+// Invoice model - payment records
+model Invoice {
+  id             String   @id @default(uuid())
+  subscriptionId String   @map("subscription_id")
+  amount         Decimal  @db.Decimal(10, 2)
+  status         String   @default("pending") // pending, paid, failed
+  paidAt         DateTime? @map("paid_at")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  subscription Subscription @relation(fields: [subscriptionId], references: [id])
+
+  @@map("invoices")
+}
+
+// WebhookEvent model - for webhook simulation and retry logic
+model WebhookEvent {
+  id          String    @id @default(uuid())
+  type        String    // subscription.created, payment.success, etc.
+  payload     Json
+  status      String    @default("pending") // pending, delivered, failed
+  attempts    Int       @default(0)
+  nextRetryAt DateTime? @map("next_retry_at")
+  deliveredAt DateTime? @map("delivered_at")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("webhook_events")
+}
